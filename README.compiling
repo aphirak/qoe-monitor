@@ -1,0 +1,22 @@
+After copying qoe-monitor to ns3.18/src/qoe-monitor
+---------------------------------------------------
+
+Step 1) Setup compiler environment 
+     $export CXXFLAGS="-Wall -ggdb -g3 -O0 -D__STDC_CONSTANT_MACROS"
+     $export CFLAGS="-Wall -ggdb -g3 -O0 -D__STDC_CONSTANT_MACROS"
+
+Step 2) Cleaning build source
+     ./waf clean
+
+Step 3) Configuring ns3
+     ./waf configure --enable-examples --enable-tests
+
+Step 4) Building ns3
+     ./waf build
+
+*** Working GCC version to compile qoe-monitor: gcc-4.4, g++-4.4
+*** Credit: modified "wscript" from Ricardo Veloso - http://sourceforge.net/p/ns3qoemonitor/discussion/general/thread/1452fcf2/
+
+*** ffmpeg to endcode/decode video must be installed and compiled by yourself
+    please follow the instruction of this website: https://trac.ffmpeg.org/wiki/UbuntuCompilationGuide
+

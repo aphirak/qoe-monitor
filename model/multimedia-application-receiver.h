@@ -1,0 +1,132 @@
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation;
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Authors: Alessandro Paganelli <alessandro.paganelli@unimore.it>
+ *          Daniela Saladino <daniela.saladino@unimore.it>
+ */
+
+#ifndef MULTIMEDIAAPPLICATIONRECEIVER_H_
+#define MULTIMEDIAAPPLICATIONRECEIVER_H_
+
+#include <cmath>
+#include <cstdlib>
+#include <cassert>
+#include <iomanip>
+#include <queue>
+#include "ns3/nstime.h"
+#include "ns3/rtp-protocol.h"
+#include "ns3/nal-unit-header.h"
+#include "ns3/fragmentation-unit-header.h"
+#include "ns3/simulation-dataset.h"
+#include "ns3/inet-socket-address.h"
+#include "ns3/udp-socket-factory.h"
+#include "ns3/tcp-socket-factory.h"
+#include "ns3/simulator.h"
+#include "ns3/application.h"
+#include "ns3/ptr.h"
+#include "ns3/packet.h"
+#include "ns3/socket.h"
+#include "ns3/data-rate.h"
+#include "ns3/address.h"
+#include "ns3/event-id.h"
+#include "ns3/packetizer.h"
+#include "ns3/packet-trace-structure.h"
+#include "ns3/multimedia-file-rebuilder.h"
+#include "ns3/callback.h"
+
+namespace ns3
+{
+
+#define _RECEIVER_PACKET_BUFFER_LENGTH 65536
+#define _MAX_PAYLOAD_LENGTH 2000
+
+  class MultimediaApplicationReceiver : public Application
+  {
+  protected:
+    /* Jitter buffer must be set in seconds */
+    Time m_jitterBufferLength;
+
+    /* Bool flag used to assess if we received at least one packet */
+    bool m_startedReception;
+    RtpProtocol m_rtpLastHeader;
+
+    /* Variable used to store the arrival time of the last received packet */
+    double m_lastReceivedTime;
+
+    /* Variables used to store the jitter estimates, according to the RFC 3550 */
+    double m_currentJitterEstimate;
+
+    Ptr<Node> m_node;
+    SimulationDataset* m_simulationDataset; // FIXME: change from pointer to smart-pointer
+    int m_receiverPort;
+
+    bool m_useTcp;
+    Ptr<Socket> m_socket;
+
+    MultimediaFileRebuilder* m_fileRebuilder;
+
+    /* Packet buffer used to store the payload of a received packet */
+    uint8_t* m_packetBuffer;
+
+    /* File type */
+    SimulationDataset::FileType m_fileType;
+
+  private:
+    void
+    OnReceive(Ptr<Socket> socket);
+    virtual void
+    StartApplication(void);
+    virtual void
+    StopApplication(void);
+
+    /* Method used to update the current estimate of the jitter, according to RFC 3550, and to decide
+     * if the current packet has to be accepted or not */
+    bool
+    CheckJitter(RtpProtocol rtpHeader);
+
+  public:
+    MultimediaApplicationReceiver(Ptr<Node> node,
+        SimulationDataset* simulationDataset, Time jitterBufferLenght);
+    MultimediaApplicationReceiver(Ptr<Node> node,
+        SimulationDataset* simulationDataset, Time jitterBufferLenght,
+        bool useTcp);
+    void
+    Init(Ptr<Node> node, SimulationDataset* simulationDataset,
+        Time jitterBufferLenght, bool useTcp);
+    void
+    SetupReceiverPort(int listeningPort)
+    {
+      m_receiverPort = listeningPort;
+    }
+
+    void
+    SetupFileRebuilder(MultimediaFileRebuilder* fileRebuilder)
+    {
+      m_fileRebuilder = fileRebuilder;
+    }
+
+    virtual
+    ~MultimediaApplicationReceiver()
+    {
+      if (m_packetBuffer)
+        {
+          free(m_packetBuffer);
+        }
+    }
+  };
+
+} // namespace ns3
+
+#endif /* MULTIMEDIAAPPLICATIONRECEIVER_H_ */
