@@ -1,6 +1,10 @@
 After copying qoe-monitor to ns3.18/src/qoe-monitor
 ---------------------------------------------------
 
+************************************************************************************
+*** Workable tested compiler to compile a qoe-monitor package: gcc-4.4, g++-4.4  ***
+************************************************************************************
+
 Step 1) Setup compiler environment 
      $export CXXFLAGS="-Wall -ggdb -g3 -O0 -D__STDC_CONSTANT_MACROS"
      $export CFLAGS="-Wall -ggdb -g3 -O0 -D__STDC_CONSTANT_MACROS"
@@ -20,3 +24,5 @@ Step 4) Building ns3
 *** ffmpeg to endcode/decode video must be installed and compiled by yourself
     please follow the instruction of this website: https://trac.ffmpeg.org/wiki/UbuntuCompilationGuide
 
+
+ffmpeg version must be used to compressed/decompressed the video file. For ubuntu, please use the instruction on: https://trac.ffmpeg.org/wiki/UbuntuCompilationGuide
