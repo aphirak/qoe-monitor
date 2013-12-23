@@ -48,8 +48,8 @@ namespace ns3
       Packetizer* packetizer, SimulationDataset* simulationDataset, bool useTcp) :
     m_receiverSocketAddress(),
     m_socket(0),
-    m_packetQueue(),
-    m_lastPacket(false)
+    m_lastPacket(false),
+    m_packetQueue()
   {
     Init(node, packetizer, simulationDataset, useTcp);
   }
@@ -137,9 +137,10 @@ namespace ns3
          * at least two packets to properly schedule the transmissions. */
         while ((m_packetQueue.size() < 2) && m_running)
           {
-            unsigned int packetId = 0;
-            unsigned long int timestamp = 0;
-            unsigned int packetSize = 0;
+            //Unused variable warning: packetId, timestamp, packetSize
+            //unsigned int packetId = 0;
+            //unsigned long int timestamp = 0;
+            //unsigned int packetSize = 0;
             Ptr<Packet> packet;
 
             /* I ask to the packetizer for a new packet */

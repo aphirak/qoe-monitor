@@ -204,8 +204,9 @@ namespace ns3
      * */
 
     assert(readFrame.size > 0);
-    unsigned int currentFrameSize = (unsigned int) readFrame.size;
-    for (unsigned int i = 0; i < readFrame.size; i++)
+    //Warning unused variable: currentFrameSize
+    //unsigned int currentFrameSize = (unsigned int) readFrame.size;
+    for (unsigned int i = 0; i < (unsigned int) readFrame.size; i++)
       {
         buffer[i] = readFrame.data[i];
       }
